@@ -101,3 +101,50 @@ public partial class Blog
     public virtual ICollection<Post> Posts { get; set; }
 }
 ```
+
+
+&nbsp;
+## 02 Reading & Writing Data
+
+Now that we have a model it’s time to use it to access some data. Implement the Main method in Program.cs as shown below. This code creates a new instance of our context and then uses it to insert a new Blog. Then it uses a LINQ query to retrieve all Blogs from the database ordered alphabetically by Title.
+```
+class Program
+{
+    static void Main(string[] args)
+    {
+        using (var db = new BloggingContext())
+        {
+            // Create and save a new Blog
+            Console.Write("Enter a name for a new Blog: ");
+            var name = Console.ReadLine();
+
+            var blog = new Blog { Name = name };
+            db.Blogs.Add(blog);
+            db.SaveChanges();
+
+            // Display all Blogs from the database
+            var query = from b in db.Blogs
+                        orderby b.Name
+                        select b;
+
+            Console.WriteLine("All blogs in the database:");
+            foreach (var item in query)
+            {
+                Console.WriteLine(item.Name);
+            }
+
+            Console.WriteLine("Press any key to exit...");
+            Console.ReadKey();
+        }
+    }
+}
+```
+You can now run the application and test it out.
+```
+Enter a name for a new Blog: ADO.NET Blog
+All blogs in the database:
+.NET Framework Blog
+ADO.NET Blog
+The Visual Studio Blog
+Press any key to exit...
+```
